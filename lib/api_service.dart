@@ -6,7 +6,7 @@ class ApiService {
   String loginApi="https://api.dev.trapme.io/test-api/public/api/login";
   String addUserApi="https://api.dev.trapme.io/test-api/public/api/user/add";
 
-  reg(User user) async {
+  Future<int> reg(User user) async {
     var uri = Uri.parse(signUpApi);
     var request = http.MultipartRequest('POST', uri);
     //request.headers.addAll(headers);
@@ -15,7 +15,7 @@ class ApiService {
     request.fields["latitude"] = user.latitude;
     request.fields["longitude"] = user.longitude;
     request.fields["password"] = user.password;
-    request.fields["gender"] = user.gender as String;
+    request.fields["gender"] = user.gender.toString();
     request.fields["phone"] = user.phone;
 
     if (user.image != null) {
@@ -31,7 +31,10 @@ class ApiService {
     if (res.statusCode == 200) {
       print("statuscode  = 200");
       final body = await res.stream.bytesToString();
-    } else {}
+    } else {
+      print("not working");
+    }
+    return res.statusCode;
   }
   add(User user) async {
     var uri = Uri.parse(addUserApi);

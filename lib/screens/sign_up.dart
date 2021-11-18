@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
+import 'package:untitled_test/api_service.dart';
 import 'package:untitled_test/location_service.dart';
 import 'package:untitled_test/model_user.dart';
 import 'package:untitled_test/screens/home.dart';
@@ -41,7 +42,8 @@ class _SignUpState extends State<SignUp> {
     });
   }
 
-  registerUser() {
+  registerUser()  {
+    print("inside regu");
     if (name!.text.isNotEmpty &&
         email!.text.isNotEmpty &&
         password!.text.isNotEmpty &&
@@ -57,9 +59,13 @@ class _SignUpState extends State<SignUp> {
           phone: phone!.text,
           password: password!.text,
           gender: group);
-      var uri = Uri.parse('https://conference.bmssystems.org/api/reg');
-      var request = http.MultipartRequest('POST', uri);
+      print('calling reg');
+      ApiService().reg(user!).then((value) {
+        print(value);
+      });
 
+    }else{
+      print("inside else");
     }
   }
 
@@ -71,10 +77,10 @@ class _SignUpState extends State<SignUp> {
     email = TextEditingController();
     phone = TextEditingController();
     password = TextEditingController();
-    // LocationService().currentLocation().then((value) {
-    //   LocationData? l=value;
-    //   print(l!.latitude.toString());
-    // });
+    LocationService().currentLocation().then((value) {
+       locationData=value;
+      print(locationData!.latitude.toString());
+    });
   }
 
   @override
@@ -173,6 +179,7 @@ class _SignUpState extends State<SignUp> {
             Container(
               padding: EdgeInsets.all(w * 0.02),
               child: TextField(
+                controller: name,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   filled: true,
@@ -188,6 +195,7 @@ class _SignUpState extends State<SignUp> {
             Container(
               padding: EdgeInsets.all(w * 0.02),
               child: TextField(
+                controller: email,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   filled: true,
@@ -203,6 +211,7 @@ class _SignUpState extends State<SignUp> {
             Container(
               padding: EdgeInsets.all(w * 0.02),
               child: TextField(
+                controller: phone,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   filled: true,
@@ -218,6 +227,7 @@ class _SignUpState extends State<SignUp> {
             Container(
               padding: EdgeInsets.all(w * 0.02),
               child: TextField(
+                controller: password,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   suffixIcon: IconButton(
@@ -271,10 +281,12 @@ class _SignUpState extends State<SignUp> {
                 height: h * 0.055,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                          return Home();
-                        }));
+
+                    registerUser();
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (context) {
+                    //       return Home();
+                    //     }));
                   },
                   child: Text("Sign up"),
                   style: ButtonStyle(
